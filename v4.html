@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>1590年ごろの旧利根川水系（広域）＋石田堤＋忍川・星川（全線表示 v4）</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #map { height: 100%; width: 100%; }
+    .panel {
+      position: absolute;
+      top: 10px; left: 10px;
+      z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      padding: 10px 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      max-width: 360px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      line-height: 1.35;
+    }
+    .panel h1 { font-size: 14px; margin: 0 0 6px 0; }
+    .panel .small { font-size: 12px; color: #333; }
+    .panel .status { font-size: 12px; margin-top: 6px; }
+    .legend { margin-top: 8px; font-size: 12px; }
+    .legend-row { display: flex; align-items: center; margin: 4px 0; gap: 8px; }
+    .swatch { width: 38px; height: 0; border-top: 5px solid #000; border-radius: 2px; }
+    .swatch.thin { border-top-width: 3px; opacity: 0.8; }
+    .swatch.dashed { border-top-style: dashed; }
+    .btnrow { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+    button {
+      border: 1px solid #bbb; background: #fff; border-radius: 10px;
+      padding: 6px 10px; font-size: 12px; cursor: pointer;
+    }
+    button:hover { background: #f4f4f4; }
+    .sliderrow { margin-top: 8px; font-size: 12px; }
+    input[type="range"] { width: 100%; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="panel">
+  <h1>1590年ごろの旧利根川水系（広域）＋石田堤＋忍川・星川（全線）</h1>
+  <div class="small">
+    太い線＝<b>東遷前に“本流筋”とされるルート（古利根川・大落古利根川・元荒川・中川・綾瀬川・隅田川）</b><br/>
+    細い線＝現行の主要河道（利根川・荒川・江戸川）<br/>
+    黒の破線＝<b>石田堤（推定）</b>（国交省の推定図の地名をアンカーに概略でなぞり）<br/>
+    緑系＝<b>忍川（＋上流の“星川通り”区間）</b>（同じ水路が「星川→忍川」と名前を変える話があるため分けて表示）<br/>
+    マゼンタ＝<b>星川（元荒川支流の星川：上星川/下星川/新星川を含める）</b><br/>
+    背景に<b>治水地形分類図</b>（旧河道・自然堤防・後背湿地）を重ねられます。
+  </div>
+
+  <div class="btnrow">
+    <button id="btnReload">河川線データを再読み込み</button>
+    <button id="btnReset">表示範囲をリセット</button>
+  </div>
+
+  <div class="sliderrow">
+    治水地形分類図の透過度：<span id="opval">0.55</span><br/>
+    <input id="opacity" type="range" min="0" max="0.9" step="0.05" value="0.55"/>
+  </div>
+
+  <div class="legend">
+    <div class="legend-row"><span class="swatch" style="border-top-color:#d73027"></span> 古利根川 / 大落古利根川</div>
+    <div class="legend-row"><span class="swatch dashed" style="border-top-color:#d73027"></span>（同上：一部を破線表示）</div>
+    <div class="legend-row"><span class="swatch" style="border-top-color:#fc8d59"></span> 元荒川（旧荒川筋）</div>
+    <div class="legend-row"><span class="swatch" style="border-top-color:#8073ac"></span> 中川・綾瀬川</div>
+    <div class="legend-row"><span class="swatch" style="border-top-color:#542788"></span> 隅田川</div>
+    <div class="legend-row"><span class="swatch thin" style="border-top-color:#1f78b4"></span> 現・利根川</div>
+    <div class="legend-row"><span class="swatch thin" style="border-top-color:#33a02c"></span> 現・荒川</div>
+    <div class="legend-row"><span class="swatch thin" style="border-top-color:#6a3d9a"></span> 現・江戸川</div>
+
+    <div class="legend-row"><span class="swatch" style="border-top-color:#1b9e77"></span> 忍川（平戸橋〜元荒川合流）</div>
+    <div class="legend-row"><span class="swatch dashed" style="border-top-color:#1b9e77"></span> 忍川上流：星川（星川通りの区間）</div>
+    <div class="legend-row"><span class="swatch" style="border-top-color:#ff00ff"></span> 星川（元荒川支流：上星川/下星川/新星川）</div>
+
+    <div class="legend-row"><span class="swatch dashed" style="border-top-color:#000000"></span> 石田堤（推定）</div>
+  </div>
+
+  <div class="status" id="status">準備中…</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+  // --- Map init ---
+  const map = L.map('map', { preferCanvas: true });
+
+  // panes for stacking
+  const paneRivers = map.createPane('paneRivers'); paneRivers.style.zIndex = 450;
+  const paneLocal  = map.createPane('paneLocal');  paneLocal.style.zIndex  = 460;
+  const paneIshida = map.createPane('paneIshida'); paneIshida.style.zIndex = 470;
+
+  // Base layers
+  const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+  });
+  const gsiStd = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+    maxZoom: 18, attribution: '&copy; GSI Japan'
+  });
+  const gsiRelief = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
+    maxZoom: 15, attribution: '&copy; GSI Japan'
+  });
+
+  // Overlays
+  const lcmfc2 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/lcmfc2/{z}/{x}/{y}.png', {
+    maxZoom: 16, opacity: 0.55, attribution: '&copy; GSI Japan'
+  });
+  const hillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+    maxZoom: 16, opacity: 0.35, attribution: '&copy; GSI Japan'
+  });
+
+  osm.addTo(map);
+
+  const baseLayers = {
+    "OpenStreetMap": osm,
+    "地理院 標準地図": gsiStd,
+    "地理院 色別標高図": gsiRelief
+  };
+
+  // River vector layers
+  const lyrKofurone    = L.layerGroup();
+  const lyrMotoArakawa = L.layerGroup();
+  const lyrNakaAyase   = L.layerGroup();
+  const lyrSumida      = L.layerGroup();
+  const lyrToneModern  = L.layerGroup();
+  const lyrArakawaModern = L.layerGroup();
+  const lyrEdoModern   = L.layerGroup();
+
+  // Local key waterways (split for clarity)
+  const lyrOshikawaMain  = L.layerGroup();  // name=忍川
+  const lyrOshikawaUpper = L.layerGroup();  // name=星川 (星川通り等の用水路区間) treated as "忍川上流"
+  const lyrHoshikawa     = L.layerGroup();  // 星川（元荒川支流：上/下/新星川含む）
+
+  // Ishida Tsutsumi overlay
+  const lyrIshidaEst = L.layerGroup();
+  const overlayLayers = {
+    "治水地形分類図（更新版）": lcmfc2,
+    "陰影起伏図": hillshade,
+    "旧利根川筋：古利根川/大落古利根川": lyrKofurone,
+    "旧荒川筋：元荒川": lyrMotoArakawa,
+    "旧本流筋とされる：中川・綾瀬川": lyrNakaAyase,
+    "隅田川": lyrSumida,
+    "現・利根川": lyrToneModern,
+    "現・荒川": lyrArakawaModern,
+    "現・江戸川": lyrEdoModern,
+    "忍川（平戸橋〜合流）": lyrOshikawaMain,
+    "忍川上流：星川（星川通り）": lyrOshikawaUpper,
+    "星川（元荒川支流）": lyrHoshikawa,
+    "石田堤（推定）": lyrIshidaEst
+  };
+
+  L.control.layers(baseLayers, overlayLayers, { collapsed: false }).addTo(map);
+
+  // Initial extent: cover Saitama (east) -> Tokyo bay
+  const initialBounds = L.latLngBounds(
+    L.latLng(35.55, 139.20),
+    L.latLng(36.45, 140.05)
+  );
+  map.fitBounds(initialBounds);
+
+  // UI controls
+  const statusEl = document.getElementById('status');
+  const opSlider = document.getElementById('opacity');
+  const opVal = document.getElementById('opval');
+  opSlider.addEventListener('input', () => {
+    const v = parseFloat(opSlider.value);
+    opVal.textContent = v.toFixed(2);
+    lcmfc2.setOpacity(v);
+  });
+  document.getElementById('btnReset').addEventListener('click', () => map.fitBounds(initialBounds));
+  document.getElementById('btnReload').addEventListener('click', () => loadRiversWide());
+
+  // --- Ishida Tsutsumi overlay (schematic retrace) ---
+  const ishidaAnchors = [
+    [36.158155, 139.46755],     // 白川戸
+    [36.1472884, 139.4683494],  // 東行田駅付近
+    [36.129312, 139.47849],     // 丸墓山古墳
+    [36.11033, 139.474221],     // 堤根
+    [36.119226, 139.465552],    // 下忍
+    [36.127361, 139.437584],    // 棚田
+    [36.127688, 139.401143]     // 東竹院（久下側）
+  ];
+
+  function catmullRomSpline(points, segments) {
+    const out = [];
+    const seg = Math.max(10, segments || 28);
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i - 1] || points[i];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2] || p2;
+      for (let j = 0; j < seg; j++) {
+        const t = j / seg, t2 = t*t, t3 = t2*t;
+        const lat = 0.5 * ((2*p1[0]) + (-p0[0]+p2[0])*t + (2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2 + (-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3);
+        const lon = 0.5 * ((2*p1[1]) + (-p0[1]+p2[1])*t + (2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2 + (-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3);
+        out.push([lat, lon]);
+      }
+    }
+    out.push(points[points.length - 1]);
+    return out;
+  }
+
+  const ishidaPts = catmullRomSpline(ishidaAnchors, 30);
+  const ishidaLine = L.polyline(ishidaPts, {
+    color: "#000000", weight: 4, opacity: 0.85, dashArray: "10 6", pane: "paneIshida"
+  }).bindPopup("<b>石田堤（推定）</b><br/>国交省『推定図』の地名アンカーを手がかりにした概略線。<br/><span style='font-size:12px;'>※模式図ベースなので、現地測量ラインではありません。</span>");
+  lyrIshidaEst.addLayer(ishidaLine);
+
+  // show by default
+  [lyrIshidaEst].forEach(l => { if (!map.hasLayer(l)) map.addLayer(l); });
+
+  // --- Styling helpers ---
+  function riverStyle(name) {
+    if (name === "古利根川" || name === "大落古利根川") return { color: "#d73027", weight: 5, opacity: 0.95, pane: "paneRivers" };
+    if (name === "元荒川") return { color: "#fc8d59", weight: 5, opacity: 0.95, pane: "paneRivers" };
+    if (name === "中川" || name === "綾瀬川") return { color: "#8073ac", weight: 4, opacity: 0.95, pane: "paneRivers", dashArray: (name==="綾瀬川" ? "6 6" : undefined) };
+    if (name === "隅田川") return { color: "#542788", weight: 4, opacity: 0.95, pane: "paneRivers" };
+
+    if (name === "利根川") return { color: "#1f78b4", weight: 3, opacity: 0.75, pane: "paneRivers" };
+    if (name === "荒川") return { color: "#33a02c", weight: 3, opacity: 0.75, pane: "paneRivers" };
+    if (name === "江戸川") return { color: "#6a3d9a", weight: 3, opacity: 0.75, pane: "paneRivers" };
+
+    // Local waterways
+    if (name === "忍川") return { color: "#1b9e77", weight: 4, opacity: 0.95, pane: "paneLocal" };
+    if (name === "忍川上流") return { color: "#1b9e77", weight: 4, opacity: 0.95, pane: "paneLocal", dashArray: "10 6" };
+    if (name === "星川") return { color: "#ff00ff", weight: 4, opacity: 0.95, pane: "paneLocal" };
+
+    return { color: "#000000", weight: 3, opacity: 0.7, pane: "paneRivers" };
+  }
+
+  
+  function clearAll() {
+    [lyrKofurone, lyrMotoArakawa, lyrNakaAyase, lyrSumida, lyrToneModern, lyrArakawaModern, lyrEdoModern,
+     lyrOshikawaMain, lyrOshikawaUpper, lyrHoshikawa].forEach(l => l.clearLayers());
+  }
+
+  function addPolylineWithOutline(coords, style, popupHtml, layerGroup, outlineMode) {
+    // outlineMode: "none" | "whiteHalo" | "triple"
+    if (outlineMode === "triple") {
+      // black outline -> white halo -> core
+      layerGroup.addLayer(L.polyline(coords, { ...style, color: "#000000", weight: (style.weight||4) + 8, opacity: 0.9 }));
+      layerGroup.addLayer(L.polyline(coords, { ...style, color: "#ffffff", weight: (style.weight||4) + 4, opacity: 1.0 }));
+    } else if (outlineMode === "whiteHalo") {
+      layerGroup.addLayer(L.polyline(coords, { ...style, color: "#ffffff", weight: (style.weight||4) + 6, opacity: 1.0 }));
+    }
+    const core = L.polyline(coords, style);
+    if (popupHtml) core.bindPopup(popupHtml);
+    layerGroup.addLayer(core);
+  }
+
+  // --- Name handling: some waterways are mapped as relations, and member ways may lack "name".
+  // We try to inherit the relation name for those segments to draw the line more completely.
+  const CORE_EXACT_NAMES = ["大落古利根川","古利根川","元荒川","中川","綾瀬川","隅田川","利根川","荒川","江戸川","忍川","新忍川","星川","上星川","下星川","新星川"];
+
+  function buildWayNameFromRelations(elements) {
+    const m = new Map(); // wayId -> Set(names)
+    elements.forEach(el => {
+      if (el.type !== "relation") return;
+      if (!el.tags || !el.tags.name || !el.members) return;
+      const rname = el.tags.name;
+      el.members.forEach(mem => {
+        if (mem.type !== "way") return;
+        if (!m.has(mem.ref)) m.set(mem.ref, new Set());
+        m.get(mem.ref).add(rname);
+      });
+    });
+    return m;
+  }
+
+  function pickBestName(nameSet) {
+    if (!nameSet || nameSet.size === 0) return "";
+    for (const nm of CORE_EXACT_NAMES) {
+      if (nameSet.has(nm)) return nm;
+    }
+    return Array.from(nameSet)[0];
+  }
+
+  function deriveName(way, relWayNames) {
+    const n = (way.tags && way.tags.name) ? way.tags.name : "";
+    if (n) return n;
+    return pickBestName(relWayNames.get(way.id));
+  }
+
+  function isOshikawaMainName(n) {
+    if (!n) return false;
+    // avoid accidental capture of "旧忍川" etc
+    if (n.includes("旧忍川")) return false;
+    return (n === "忍川" || n === "新忍川" || n.includes("忍川"));
+  }
+
+  function isHoshikawaToken(n) {
+    return !!n && n.includes("星川");
+  }
+
+  function getNodeKeys(way) {
+    // Prefer real node IDs if present; otherwise fall back to rounded endpoints (less robust).
+    if (way.nodes && way.nodes.length) return way.nodes.map(id => "n" + id);
+    if (!way.geometry || way.geometry.length < 2) return [];
+    const a = way.geometry[0], b = way.geometry[way.geometry.length - 1];
+    const key = (p) => `${p.lat.toFixed(6)},${p.lon.toFixed(6)}`;
+    return [key(a), key(b)];
+  }
+
+  // Connectivity-based classification:
+  // "市内中心部の星川" を機械的に bbox で判定するのではなく、
+  // 「忍川（/新忍川）」から辿れる「星川を含む同一水系の線分」を上流区間として扱う。
+  function computeOshikawaComponent(ways, relWayNames) {
+    const candidate = [];
+    const byId = new Map();
+
+    ways.forEach(w => {
+      const nm = deriveName(w, relWayNames);
+      if (isOshikawaMainName(nm) || isHoshikawaToken(nm)) {
+        const wk = getNodeKeys(w);
+        byId.set(w.id, { way: w, name: nm, nodeKeys: wk });
+        candidate.push(w.id);
+      }
+    });
+
+    const node2ways = new Map();
+    candidate.forEach(id => {
+      const rec = byId.get(id);
+      (rec.nodeKeys || []).forEach(k => {
+        if (!node2ways.has(k)) node2ways.set(k, []);
+        node2ways.get(k).push(id);
+      });
+    });
+
+    const startIds = candidate.filter(id => isOshikawaMainName(byId.get(id).name));
+    const visited = new Set(startIds);
+    const stack = startIds.slice();
+
+    while (stack.length) {
+      const cur = stack.pop();
+      const rec = byId.get(cur);
+      if (!rec) continue;
+      (rec.nodeKeys || []).forEach(k => {
+        const nbrs = node2ways.get(k) || [];
+        nbrs.forEach(nid => {
+          if (!visited.has(nid)) {
+            visited.add(nid);
+            stack.push(nid);
+          }
+        });
+      });
+    }
+
+    return { oshikawaIds: visited, byId: byId };
+  }
+
+  function drawWayByName(way, name, oshikawaIds) {
+    if (!way.geometry || !name) return;
+    const coords = way.geometry.map(pt => [pt.lat, pt.lon]);
+
+    // Major rivers (exact-ish)
+    if (name === "古利根川" || name === "大落古利根川") {
+      const st = riverStyle(name);
+      if (name === "大落古利根川") st.dashArray = "8 6";
+      addPolylineWithOutline(coords, st, name, lyrKofurone, "none");
+      return;
+    }
+    if (name === "元荒川") { addPolylineWithOutline(coords, riverStyle(name), name, lyrMotoArakawa, "none"); return; }
+    if (name === "中川" || name === "綾瀬川") { addPolylineWithOutline(coords, riverStyle(name), name, lyrNakaAyase, "none"); return; }
+    if (name === "隅田川") { addPolylineWithOutline(coords, riverStyle(name), name, lyrSumida, "none"); return; }
+    if (name === "利根川") { addPolylineWithOutline(coords, riverStyle(name), name, lyrToneModern, "none"); return; }
+    if (name === "荒川") { addPolylineWithOutline(coords, riverStyle(name), name, lyrArakawaModern, "none"); return; }
+    if (name === "江戸川") { addPolylineWithOutline(coords, riverStyle(name), name, lyrEdoModern, "none"); return; }
+
+    // Local: 忍川・星川（衝突する名前を「つながり」で分解）
+    const inOshikawa = oshikawaIds && oshikawaIds.has(way.id);
+
+    if (inOshikawa) {
+      if (isHoshikawaToken(name)) {
+        const st = riverStyle("忍川上流");
+        addPolylineWithOutline(coords, st,
+          "<b>忍川上流：市内中心部の星川</b><br/>（熊谷中心部で「星川」と呼ばれる区間。河川としては忍川の上流。）",
+          lyrOshikawaUpper, "whiteHalo");
+      } else if (isOshikawaMainName(name)) {
+        const st = riverStyle("忍川");
+        if (name === "新忍川") st.dashArray = "6 6";
+        addPolylineWithOutline(coords, st, name, lyrOshikawaMain, "whiteHalo");
+      } else {
+        // unnamed segments inherited from relation etc
+        const st = riverStyle("忍川");
+        addPolylineWithOutline(coords, st, "忍川（名称未付与区間）", lyrOshikawaMain, "whiteHalo");
+      }
+      return;
+    }
+
+    // Not in Oshikawa component: treat 星川系 as the separate Hoshikawa (tributary of 元荒川)
+    if (isHoshikawaToken(name)) {
+      const st = riverStyle("星川");
+      addPolylineWithOutline(coords, st, name, lyrHoshikawa, "triple");
+      return;
+    }
+  }
+
+  
+async function overpassFetch(query) {
+    const url = "https://overpass-api.de/api/interpreter";
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+      body: "data=" + encodeURIComponent(query)
+    });
+    if (!res.ok) throw new Error("Overpass HTTP " + res.status);
+    return await res.json();
+  }
+
+  function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  async function loadRiversWide() {
+    clearAll();
+    statusEl.textContent = "OSM（Overpass）から河川線を読み込み中…（関係のリストから全線を拾います）";
+
+    // Wide bbox（広域：中川低地〜東京湾）
+    const s = 35.55, w = 139.20, n = 36.45, e = 140.05;
+
+    const exactRegex = CORE_EXACT_NAMES.map(escRe).join("|");
+    const localFuzzy = "(忍川|星川)";
+
+    const q = `
+      [out:json][timeout:55];
+      (
+        // Exact-name fetch for the big rivers (keeps the result size sane)
+        way["waterway"~"river|stream|canal|ditch|drain"]["name"~"^(${exactRegex})$"](${s},${w},${n},${e});
+        relation["type"="waterway"]["name"~"^(${exactRegex})$"](${s},${w},${n},${e});
+
+        // Fuzzy fetch for local name-collision waterways (captures 星川通り区間などの表記ゆれ)
+        way["waterway"~"river|stream|canal|ditch|drain"]["name"~"${localFuzzy}"](${s},${w},${n},${e});
+        relation["type"="waterway"]["name"~"${localFuzzy}"](${s},${w},${n},${e});
+      );
+      (._;>;);
+      out body geom;
+    `;
+
+    try {
+      const data = await overpassFetch(q);
+      const elements = (data && data.elements) ? data.elements : [];
+      const relWayNames = buildWayNameFromRelations(elements);
+      const ways = elements.filter(el => el.type === "way" && el.geometry && el.tags && el.tags.waterway);
+
+      const { oshikawaIds } = computeOshikawaComponent(ways, relWayNames);
+
+      let drawn = 0;
+      ways.forEach(wy => {
+        const nm = deriveName(wy, relWayNames);
+        if (!nm) return;
+
+        const isMajor = CORE_EXACT_NAMES.includes(nm);
+        const isLocal = nm.includes("忍川") || nm.includes("星川");
+
+        if (!isMajor && !isLocal) return;
+
+        drawWayByName(wy, nm, oshikawaIds);
+        drawn += 1;
+      });
+
+      // Default layers on
+      [lyrKofurone, lyrMotoArakawa, lyrNakaAyase, lyrSumida,
+       lyrOshikawaMain, lyrOshikawaUpper, lyrHoshikawa,
+       lyrToneModern, lyrArakawaModern, lyrEdoModern].forEach(l => { if (!map.hasLayer(l)) map.addLayer(l); });
+
+      if (!map.hasLayer(lcmfc2)) map.addLayer(lcmfc2);
+
+      statusEl.textContent = `読み込み完了 ✅ OSM線分（候補）:${ways.length} / 描画:${drawn}（クリックで名称）`;
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "読み込み失敗 ⚠️ Overpassが混雑しているかも。少し待って「再読み込み」を押してください。";
+    }
+  }
+
+
+  loadRiversWide();
+</script>
+</body>
+</html>
