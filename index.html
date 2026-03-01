@@ -69,6 +69,31 @@
     white-space: nowrap;
     box-shadow: 0 1px 2px rgba(0,0,0,0.18);
   }
+  @media (max-width: 768px) {
+    .panel {
+      max-width: calc(100vw - 20px);
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    .panel.collapsed .small,
+    .panel.collapsed .btnrow,
+    .panel.collapsed .sliderrow,
+    .panel.collapsed .legend,
+    .panel.collapsed .status {
+      display: none;
+    }
+    .panel h1 {
+      cursor: pointer;
+      user-select: none;
+    }
+    .panel h1::after {
+      content: ' ▲';
+      font-size: 10px;
+    }
+    .panel.collapsed h1::after {
+      content: ' ▼';
+    }
+  }
 </style>
 </head>
 <body>
@@ -3436,6 +3461,21 @@
   }
 
   loadRiversWide();
+
+  // モバイル: h1タップでパネルトグル（デフォルト折り畳み）
+  (function() {
+    var panel = document.querySelector('.panel');
+    var h1 = panel.querySelector('h1');
+    function isMobile() { return window.innerWidth <= 768; }
+    if (isMobile()) { panel.classList.add('collapsed'); }
+    h1.addEventListener('click', function() {
+      if (!isMobile()) return;
+      panel.classList.toggle('collapsed');
+    });
+    window.addEventListener('resize', function() {
+      if (!isMobile()) { panel.classList.remove('collapsed'); }
+    });
+  })();
 </script>
 </body>
 </html>
