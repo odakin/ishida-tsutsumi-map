@@ -75,23 +75,18 @@
 <div id="map"></div>
 
 <div class="panel">
-  <h1>1590年ごろの関東平野の河川水系（利根川・荒川水系ネットワーク）（v20）</h1>
-  <div class="small">
+  <h1>1590年ごろの関東平野の河川水系（v20）</h1>
+  <div class=”small”>
     <ul>
-      <li><b>太い線</b>：1590年前後（東遷・西遷の大改修前）に「本流筋/主要な流れ筋」として語られる残存河道（古利根川・大落古利根川／元荒川／中川・綾瀬川）</li>
-      <li><b>下流口の参照</b>：浅草川/隅田川筋（説明に出てくる「東京湾への出口側」の目安）</li>
-      <li><b>（参照）現荒川の該当区間</b>：和田吉野川（最下流側）→入間川合流→隅田川最上流（岩淵付近）までを、現河道データで“つなぎの目安”として表示。※岩淵以南（現・荒川の放水路区間〜河口）は1590表示では描きません。</li>
-      <li><b>茶の破線</b>：【西遷前】入間川水系ルート（推定）（和田→市野→入間→隅田川筋）。※秩父付近の上流山地は旧荒川水系と混同しやすいので、推定ルートは<b>平野部の接続区間のみ</b>表示。</li>
-      <li><b>黒の破線</b>：石田堤（推定）（国交省の推定図の地名アンカーを手がかりに概略でなぞり）</li>
-      <li><b>シアン</b>：武蔵水路（1960年代・参考）／<b>黄</b>：見沼代用水（1728年・参考）</li>
-      <li>※<b>星川×見沼代用水の共用区間</b>は、<b>星川のみON→星川色</b>／<b>見沼のみON→見沼色</b>／<b>両方ON→二色</b>で表示します。</li>
-      <li>背景に<b>治水地形分類図</b>（旧河道・自然堤防・後背湿地）を重ねられます。</li>
-      <li>利根川水系ネットワーク（会の川・青毛堀川・松原落・古利根川排水路・中川南東・十王堀等）</li>
-      <li>荒川水系（荒川上流）</li>
+      <li>【利根川水系】利根川（Q1・12水系・Q2）・会の川・青毛堀川・松原落排水路・古利根川排水路・中川南東・十王堀排水路（1590年当時の水系ネットワーク）</li>
+      <li>【荒川水系】荒川上流（1590年当時の流路）</li>
+      <li>旧利根川（古利根/大落）・旧利根川本流（中川・綾瀬）・旧荒川（元荒川）：既存の主要河川</li>
+      <li>忍川・星川（既存）</li>
+      <li>茶の破線：【西遷前】入間川水系ルート（推定）</li>
+      <li>黒の破線：石田堤（推定）</li>
+      <li>シアン：武蔵水路／黄：見沼代用水</li>
+      <li>背景に治水地形分類図を重ねられます</li>
     </ul>
-    <div style="margin-top:6px;">
-      ※河川線データは <b>./data/rivers_wide_overpass.json</b> があればそれを優先して読み込み、無ければ Overpass（OSM）から取得します。
-    </div>
   </div>
 
   <div class="btnrow">
@@ -107,27 +102,17 @@
   </div>
 
   <div class="legend">
-    <div class="legend-row"><span class="swatch" style="border-top-color:#0072B2"></span>
-      旧利根川（古利根/大落）・元荒川・中川/綾瀬・忍川・星川（同一水系として同色）</div>
-    <div class="legend-row"><span class="swatch thin dashed" style="border-top-color:#0072B2"></span>
-      忍川上流（熊谷中心部で「星川」と呼ばれる区間）は破線</div>
-    <div class="legend-row"><span class="swatch" style="border-top-color:#8c510a"></span>
-      下流口参照（浅草/隅田）・入間川・（現荒川の該当区間）</div>
-    <div class="legend-row"><span class="swatch thin dashed" style="border-top-color:#8c510a"></span>
-      【西遷前】入間川水系ルート（推定：和田→市野→入間→隅田筋）</div>
-    <div class="legend-row"><span class="swatch dashed" style="border-top-color:#000000"></span>
-      石田堤（推定）</div>
-    <div class="legend-row"><span class="swatch dashed" style="border-top-color:#00bcd4"></span>
-      武蔵水路（1960年代・参考）</div>
-    <div class="legend-row"><span class="swatch dashed" style="border-top-color:#e6ab02"></span>
-      見沼代用水（1728年・参考）</div>
-    <div class="legend-row"><span class="swatch thin" style="border-top-color:#0072B2"></span><span class="swatch thin" style="border-top-color:#e6ab02"></span>
-      共用区間（星川×見沼代用水）：両方ONで二色</div>
-    <div class="legend-row">📍 <b>重要地点</b>：忍城／石田三成本陣（丸墓山古墳）</div>
-    <div class="legend-row"><span class="swatch" style="border-top-color:#0072B2"></span>
-      青実線: 利根川水系ネットワーク（利根川Q1/Q2・12水系・会の川・青毛堀川等）</div>
-    <div class="legend-row"><span class="swatch" style="border-top-color:#0072B2"></span>
-      青実線: 荒川上流</div>
+    <b>凡例</b><br>
+    1. 青実線(太): 利根川水系（Q1・12水系・Q2）・会の川・青毛堀川等（新規追加）<br>
+    2. 青実線(太): 荒川上流（新規追加）<br>
+    3. 青実線(太): 旧利根川（古利根/大落）・元荒川・中川/綾瀬・忍川・星川（既存）<br>
+    4. 青破線(細): 忍川上流（熊谷中心部の「星川」区間）<br>
+    5. 茶実線: 下流口参照（浅草/隅田）・入間川・現荒川の該当区間<br>
+    6. 茶破線(細): 【西遷前】入間川水系ルート（推定）<br>
+    7. 黒破線: 石田堤（推定）<br>
+    8. シアン破線: 武蔵水路（1960年代・参考）<br>
+    9. 黄破線: 見沼代用水（1728年・参考）<br>
+    10. 📍重要地点：忍城／石田三成本陣（丸墓山古墳）<br>
   </div>
 
   <div class="status" id="status">準備中…</div>
