@@ -69,13 +69,9 @@
     white-space: nowrap;
     box-shadow: 0 1px 2px rgba(0,0,0,0.18);
   }
-  /* 折り畳み時: メディアクエリ外で定義（確実に非表示） */
-  .panel.collapsed .small,
-  .panel.collapsed .btnrow,
-  .panel.collapsed .sliderrow,
-  .panel.collapsed .legend,
-  .panel.collapsed .status {
-    display: none;
+  /* 折り畳み時: h1以外の全直下子要素を一括非表示 */
+  .panel.collapsed > *:not(h1) {
+    display: none !important;
   }
 
   @media (max-width: 768px) {
