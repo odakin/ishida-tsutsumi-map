@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>1590年ごろの旧利根川水系（広域）＋石田堤＋忍川・星川＋武蔵水路・見沼代用水（v18：現荒川の岩淵以南カット／三ケ尻直線削除／左パネル整理）</title>
+<title>1590年ごろの関東平野の河川水系（利根川・荒川水系ネットワーク）（v20）</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
@@ -75,7 +75,7 @@
 <div id="map"></div>
 
 <div class="panel">
-  <h1>1590年ごろの旧利根川水系（広域）＋石田堤＋忍川・星川（v18）</h1>
+  <h1>1590年ごろの関東平野の河川水系（利根川・荒川水系ネットワーク）（v20）</h1>
   <div class="small">
     <ul>
       <li><b>太い線</b>：1590年前後（東遷・西遷の大改修前）に「本流筋/主要な流れ筋」として語られる残存河道（古利根川・大落古利根川／元荒川／中川・綾瀬川）</li>
@@ -86,6 +86,8 @@
       <li><b>シアン</b>：武蔵水路（1960年代・参考）／<b>黄</b>：見沼代用水（1728年・参考）</li>
       <li>※<b>星川×見沼代用水の共用区間</b>は、<b>星川のみON→星川色</b>／<b>見沼のみON→見沼色</b>／<b>両方ON→二色</b>で表示します。</li>
       <li>背景に<b>治水地形分類図</b>（旧河道・自然堤防・後背湿地）を重ねられます。</li>
+      <li>利根川水系ネットワーク（会の川・青毛堀川・松原落・古利根川排水路・中川南東・十王堀等）</li>
+      <li>荒川水系（荒川上流）</li>
     </ul>
     <div style="margin-top:6px;">
       ※河川線データは <b>./data/rivers_wide_overpass.json</b> があればそれを優先して読み込み、無ければ Overpass（OSM）から取得します。
@@ -122,6 +124,10 @@
     <div class="legend-row"><span class="swatch thin" style="border-top-color:#0072B2"></span><span class="swatch thin" style="border-top-color:#e6ab02"></span>
       共用区間（星川×見沼代用水）：両方ONで二色</div>
     <div class="legend-row">📍 <b>重要地点</b>：忍城／石田三成本陣（丸墓山古墳）</div>
+    <div class="legend-row"><span class="swatch" style="border-top-color:#0072B2"></span>
+      青実線: 利根川水系ネットワーク（利根川Q1/Q2・12水系・会の川・青毛堀川等）</div>
+    <div class="legend-row"><span class="swatch" style="border-top-color:#0072B2"></span>
+      青実線: 荒川上流</div>
   </div>
 
   <div class="status" id="status">準備中…</div>
