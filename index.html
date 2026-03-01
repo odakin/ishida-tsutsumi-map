@@ -728,9 +728,7 @@
   }
 
   // ----- 上流接続（手描き推定ライン） -----
-  function addNakaAyaseUpstreamExt() {
-    // 旧利根川本流（中川・綾瀬）の上流側延伸 — 群馬方面からの旧利根川との接続
-    // 1590年頃、利根川は群馬から南下し中川・綾瀬川筋へ流れていた（東遷事業以前）
+  function addToneQ1() {
     const coords = [
       // === 利根川Q1 (324pts) ===
       [36.4996431, 139.0164225],
@@ -1057,6 +1055,11 @@
       [36.2721541, 139.1793653],
       [36.2715197, 139.1801722],
       [36.2704695, 139.1815834],
+    ];
+    addPolylineWithOutline(coords, { color: COLOR_MAIN, weight: 4, opacity: 0.95, pane: 'paneRivers' }, "<b>旧利根川本流 Q1</b><br/>群馬・渋川方面→利根川上流区間（1590年頃）", lyrNakaAyase, "triple");
+  }
+  function addTone12ways() {
+    const coords = [
       // === 利根川接続12ways (57pts) ===
       [36.2704695, 139.1815834],
       [36.2692528, 139.1829085],
@@ -1115,6 +1118,11 @@
       [36.2426425, 139.3729005],
       [36.241099, 139.3765534],
       [36.2397309, 139.3796494],
+    ];
+    addPolylineWithOutline(coords, { color: COLOR_MAIN, weight: 4, opacity: 0.95, pane: 'paneRivers' }, "<b>旧利根川本流 接続区間</b><br/>Q1→Q2接続（12ways統合）", lyrNakaAyase, "triple");
+  }
+  function addToneQ2() {
+    const coords = [
       // === 利根川Q2東進 (50pts) ===
       [36.2397309, 139.3796494],
       [36.237896, 139.382889],
@@ -1166,7 +1174,11 @@
       [36.192625, 139.5101042],
       [36.1919458, 139.5125492],
       [36.1916981, 139.5159487],
-      // === Bridge → 会の川N ===
+    ];
+    addPolylineWithOutline(coords, { color: COLOR_MAIN, weight: 4, opacity: 0.95, pane: 'paneRivers' }, "<b>旧利根川本流 Q2東進</b><br/>利根川東進区間（1590年頃）", lyrNakaAyase, "triple");
+  }
+  function addAinokawa() {
+    const coords = [
       // === 会の川 (431pts) ===
       [36.1851547, 139.5140252],
       [36.1850998, 139.5140096],
@@ -1599,15 +1611,8 @@
       [36.1238658, 139.6173017],
       [36.1237913, 139.6175176],
       [36.1237732, 139.6178031],
-      // === Bridge-4a ===
-      [36.132472, 139.6389159],
-      // === Bridge-4b → 古利根川排水路N ===
-      [36.1411707, 139.6600287],
     ];
-    addPolylineWithOutline(coords,
-      { color: COLOR_MAIN, weight: 4, opacity: 0.95, pane: "paneRivers" },
-      "<b>旧利根川本流（推定）上流接続</b><br/>群馬方面→中川・綾瀬川筋（1590年頃）。<br/>利根川東遷事業（1594〜1654年）以前の旧本流筋。",
-      lyrNakaAyase, "triple");
+    addPolylineWithOutline(coords, { color: COLOR_MAIN, weight: 4, opacity: 0.95, pane: 'paneRivers' }, "<b>会の川</b><br/>旧利根川分流（1594年締切前）。加須市川口方面へ南流。", lyrNakaAyase, "triple");
   }
 
   function addMotoArakawaUpstreamExt() {
@@ -1790,7 +1795,11 @@
       buildIrumaPreRoute();
 
       // 上流接続（手描き推定ライン）
-      addNakaAyaseUpstreamExt();
+      // === 旧利根川水系（上流接続） ===
+      addToneQ1();
+      addTone12ways();
+      addToneQ2();
+      addAinokawa();
       addMotoArakawaUpstreamExt();
 
       // apply default ON/OFF (ユーザー要望のデフォルト設定)
