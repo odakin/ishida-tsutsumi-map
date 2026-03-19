@@ -4,6 +4,66 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>石田堤と1590年ごろの関東平野の河川水系（利根川・荒川水系ネットワーク）（v20）</title>
+<meta name="description" content="1590年の忍城水攻めで石田三成が築いた石田堤と、当時の関東平野の河川水系を地図上に可視化。利根川・荒川の旧流路、忍川・星川など12河川をLeafletで表示するインタラクティブマップ。"/>
+<meta name="author" content="odakin"/>
+<meta name="keywords" content="石田堤,忍城,水攻め,石田三成,1590年,関東平野,利根川,荒川,河川水系,旧流路,歴史地図,Leaflet"/>
+<link rel="canonical" href="https://odakin.github.io/ishida-tsutsumi-map/"/>
+<!-- Open Graph -->
+<meta property="og:title" content="石田堤と1590年ごろの関東平野の河川水系"/>
+<meta property="og:description" content="1590年の忍城水攻めで石田三成が築いた石田堤と、当時の関東平野の河川水系を地図上に可視化するインタラクティブマップ。"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://odakin.github.io/ishida-tsutsumi-map/"/>
+<meta property="og:locale" content="ja_JP"/>
+<meta property="og:site_name" content="石田堤マップ"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="石田堤と1590年ごろの関東平野の河川水系"/>
+<meta name="twitter:description" content="1590年の忍城水攻めで石田三成が築いた石田堤と、当時の関東平野の河川水系を地図上に可視化するインタラクティブマップ。"/>
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "石田堤と1590年ごろの関東平野の河川水系",
+  "description": "1590年の忍城水攻めで石田三成が築いた石田堤と、当時の関東平野の河川水系を地図上に可視化するインタラクティブマップ。利根川・荒川の旧流路を含む12河川を表示。",
+  "url": "https://odakin.github.io/ishida-tsutsumi-map/",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web browser",
+  "inLanguage": "ja",
+  "isAccessibleForFree": true,
+  "about": [
+    {
+      "@type": "Place",
+      "name": "石田堤",
+      "description": "1590年に石田三成が忍城水攻めのために築いた堤防",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.129312,
+        "longitude": 139.47849
+      }
+    },
+    {
+      "@type": "Place",
+      "name": "忍城",
+      "description": "武蔵国の城。1590年の豊臣秀吉の小田原征伐で水攻めを受けた",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.137974,
+        "longitude": 139.453445
+      }
+    }
+  ],
+  "temporalCoverage": "1590",
+  "spatialCoverage": {
+    "@type": "Place",
+    "name": "関東平野",
+    "geo": {
+      "@type": "GeoShape",
+      "box": "35.8 139.2 36.3 139.8"
+    }
+  }
+}
+</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://odakin.github.io/ishida-tsutsumi-map/sitemap.xml
