@@ -1,0 +1,7 @@
+# public-tree-accept.txt — scan-public-tree.sh の棚卸しで「見た上で残す」 と決めた token。
+#
+# ⚠️ pre-commit gate には効かない (= 新しい書き込みは今までどおり止まる)。 効くのは
+#    claude-config/scripts/scan-public-tree.sh の棚卸しだけ。
+# ⚠️ ここに書けるのは **既に tree の他の場所に在る文字列** だけ (= 走査が検査する)。
+
+0.7.62.10   # 誤検知。 取得した地図データの `generator: Overpass API 0.7.62.10` = API の版で IP ではない
