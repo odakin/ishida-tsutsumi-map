@@ -1,5 +1,7 @@
 # ishida-tsutsumi-map Session
 
+> 📌 SESSION.md = 現在地 + 次の一手だけ (層1 claude-config/CONVENTIONS.md#session-no-durable-record)。 以前の「直近の決定事項」「作業ログ」 は [`SESSION-archive.md`](SESSION-archive.md)。
+
 ## 現在の状態
 **待機中**: v20 公開済み。特に進行中のタスクなし。
 
@@ -8,10 +10,3 @@
 
 ## 次のステップ
 1. 必要に応じて河川データの追加・修正
-
-## 直近の決定事項
-- 2026-03-16: CLAUDE.md / SESSION.md を規約に従い作成
-
-## 作業ログ
-### 2026-03-16
-- CLAUDE.md / SESSION.md 作成
